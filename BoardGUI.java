@@ -103,7 +103,7 @@ public class BoardGUI extends JPanel implements KeyListener, ActionListener{
 				break;
 				
 			case 38: //up
-			
+				data.slideUp();
 				break;
 				
 			case 40: //down

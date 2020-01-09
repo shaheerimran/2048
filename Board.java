@@ -152,7 +152,7 @@ public class Board {
 
 	public void slideLeft(int[] arr) {
 
-		for (int i = 0; i <= arr.length-1; i++){
+		for (int i = 0; i <= arr.length-1; i++){ 
 			
 			if(arr[i] == 0){
 				//find the first non-empty tile
@@ -198,14 +198,15 @@ public class Board {
 	 */
 
 	public int[] getCol(int[][] data, int c) {
+		
 		int[] result = new int[data[0].length];
 		
 		for(int i = 0; i < data[0].length; i++){
-			result[i] = data[c][i];
+			result[i] = data[i][c];
 		}
 		
-		
 		return result;
+		
 	}
 
 	/**
@@ -217,6 +218,25 @@ public class Board {
 	public void slideUp(int[] arr) {
 		/* calls a helper method */
 		// do not rewrite logic you already have!
+		for (int i = 0; i <= arr.length-1; i++){ 
+			
+			if(arr[i] == 0){
+				//find the first non-empty tile
+				//swap if found
+				
+				for(int j = i+1; j <= arr.length-1; j++){
+					
+					if(arr[j] != 0){
+						arr[i] = arr[j];
+						arr[j] = 0;
+						break;
+					}
+					
+				}
+			}
+			
+		}
+
 	}
 
 	/*
@@ -232,6 +252,16 @@ public class Board {
 		//have slideLeft perform manipulation on the array
 		// copy over the 1D array representation of the column
 		// back to the 2D board array
+		for(int i = 0; i < board.length; i++){
+			int[] col = this.getCol(board, i);
+			
+			slideUp(col);
+			
+			for(int j = 0; j < board[0].length; j++){
+				board[j][i] = col[j];
+			}
+			
+		}
 	}
 
 	public void slideDown(int[] arr) {
