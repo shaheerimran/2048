@@ -67,9 +67,28 @@ public class Board {
 	 */
 
 	public void populateOne() {
-
-			
-
+		
+		if(numOpenSpaces == 0){
+			return;
+		}
+		
+		//Find all empty spaces
+		Coordinates[] empty = new Coordinates[numOpenSpaces];
+		
+		int elim_count = 0;
+		for(int i = 0; i < board.length; i++){
+			for(int j = 0; j < board[0].length; j++){
+				if(board[i][j] == 0){
+					empty[elim_count] = new Coordinates(i, j);
+				}
+			}
+		}
+		
+		//Find random space to put new block
+		int pos = (int) Math.random() * empty.length;
+		board[empty[pos].getX()][empty[pos].getY()] = 2;
+		numOpenSpaces--;
+		tilesOccupied++;
 	}
 
 	/*
@@ -265,7 +284,8 @@ public class Board {
 	}
 
 	public void slideDown(int[] arr) {
-
+		
+		slideRight(arr);
 		
 	}
 
@@ -278,7 +298,18 @@ public class Board {
 	 */
 
 	public void slideDown() {
-
+		
+		for(int i = 0; i < board.length; i++){
+			int[] col = this.getCol(board, i);
+			
+			slideDown(col);
+			
+			for(int j = 0; j < board[0].length; j++){
+				board[j][i] = col[j];
+			}
+			
+		}
+		
 	}
 
 	/*
@@ -297,7 +328,16 @@ public class Board {
 	 */
 
 	public void combineRight() {
-
+		for(int i = 0; i < board.length; i++){
+			for(int j = 0; j < board[0].length-1; j++){
+				if(board[i][j] == board[i][j+1]){
+					board[i][j+1] *= 2;
+					board[i][j] = 0;
+				}
+			}
+		}
+		numOpenSpaces++;
+		tilesOccupied--;
 	}
 
 	/*
@@ -306,7 +346,16 @@ public class Board {
 	 */
 
 	public void combineLeft() {
-
+		for(int i = 0; i < board.length; i++){
+			for(int j = 0; j < board[0].length-1; j++){
+				if(board[i][j] == board[i][j+1]){
+					board[i][j] *= 2;
+					board[i][j+1] = 0;
+				}
+			}
+		}
+		numOpenSpaces++;
+		tilesOccupied--;
 	}
 	
 	/*
@@ -371,4 +420,27 @@ public class Board {
 		}
 	}
 
+}
+
+class Coordinates{
+	int x;
+	int y;
+	
+	public Coordinates(){
+		this.x = 0;
+		this.y = 0;
+	}
+	
+	public Coordinates(int x, int y){
+		this.x = x;
+		this.y = y;
+	}
+	
+	public int getX(){
+		return this.x;
+	}
+	
+	public int getY(){
+		return this.y;
+	}
 }
