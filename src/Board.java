@@ -67,9 +67,28 @@ public class Board {
 	 */
 
 	public void populateOne() {
-
-			
-
+		
+		if(numOpenSpaces == 0){
+			return;
+		}
+		
+		//Find all empty spaces
+		Coordinates[] empty = new Coordinates[numOpenSpaces];
+		
+		int elim_count = 0;
+		for(int i = 0; i < board.length; i++){
+			for(int j = 0; j < board[0].length; j++){
+				if(board[i][j] == 0){
+					empty[elim_count] = new Coordinates(i, j);
+				}
+			}
+		}
+		
+		//Find random space to put new block
+		int pos = (int) Math.random() * empty.length;
+		board[empty[pos].getX()][empty[pos].getY()] = 2;
+		numOpenSpaces--;
+		tilesOccupied++;
 	}
 
 	/*
@@ -89,7 +108,7 @@ public class Board {
 
 	public void slideRight(int[] row) {
 		
-		for (int i = row.length-1; i>= 0; i--){
+		for (int i = row.length-1; i >= 0; i--){
 			
 			if(row[i] == 0){
 				//find the first non-empty tile
@@ -97,9 +116,9 @@ public class Board {
 				
 				for(int j = i-1; j >= 0; j--){
 					
-					if(row[j] == 0){
-						row[j] = row[i];
-						row[i] = 0;
+					if(row[j] != 0){
+						row[i] = row[j];
+						row[j] = 0;
 						break;
 					}
 					
@@ -107,7 +126,6 @@ public class Board {
 			}
 			
 		}
-		
 		
 	}
 
@@ -153,8 +171,25 @@ public class Board {
 
 	public void slideLeft(int[] arr) {
 
-		
-		
+		for (int i = 0; i <= arr.length-1; i++){ 
+			
+			if(arr[i] == 0){
+				//find the first non-empty tile
+				//swap if found
+				
+				for(int j = i+1; j <= arr.length-1; j++){
+					
+					if(arr[j] != 0){
+						arr[i] = arr[j];
+						arr[j] = 0;
+						break;
+					}
+					
+				}
+			}
+			
+		}
+	
 	}
 
 	/*
@@ -170,7 +205,9 @@ public class Board {
 		
 		//visit every single row in the 2D array
 		//call the slideLeft method that takes in one argument
-		
+		for(int i = 0; i < board.length; i++){
+			slideLeft(board[i]);
+		}
 		
 	}
 
@@ -180,7 +217,15 @@ public class Board {
 	 */
 
 	public int[] getCol(int[][] data, int c) {
-		return new int[0];
+		
+		int[] result = new int[data[0].length];
+		
+		for(int i = 0; i < data[0].length; i++){
+			result[i] = data[i][c];
+		}
+		
+		return result;
+		
 	}
 
 	/**
@@ -192,6 +237,25 @@ public class Board {
 	public void slideUp(int[] arr) {
 		/* calls a helper method */
 		// do not rewrite logic you already have!
+		for (int i = 0; i <= arr.length-1; i++){ 
+			
+			if(arr[i] == 0){
+				//find the first non-empty tile
+				//swap if found
+				
+				for(int j = i+1; j <= arr.length-1; j++){
+					
+					if(arr[j] != 0){
+						arr[i] = arr[j];
+						arr[j] = 0;
+						break;
+					}
+					
+				}
+			}
+			
+		}
+
 	}
 
 	/*
@@ -201,21 +265,27 @@ public class Board {
 	 * You must use slideUp and getCol for full credit.
 	 */
 	public void slideUp() {
-		
 		//visit every column index
 		//grab each column as an array using getCol -> keep track of it in a 1d array
 		// variable/reference
 		//have slideLeft perform manipulation on the array
 		// copy over the 1D array representation of the column
 		// back to the 2D board array
-
-		
-		
-		
+		for(int i = 0; i < board.length; i++){
+			int[] col = this.getCol(board, i);
+			
+			slideUp(col);
+			
+			for(int j = 0; j < board[0].length; j++){
+				board[j][i] = col[j];
+			}
+			
+		}
 	}
 
 	public void slideDown(int[] arr) {
-
+		
+		slideRight(arr);
 		
 	}
 
@@ -228,7 +298,18 @@ public class Board {
 	 */
 
 	public void slideDown() {
-
+		
+		for(int i = 0; i < board.length; i++){
+			int[] col = this.getCol(board, i);
+			
+			slideDown(col);
+			
+			for(int j = 0; j < board[0].length; j++){
+				board[j][i] = col[j];
+			}
+			
+		}
+		
 	}
 
 	/*
@@ -247,7 +328,18 @@ public class Board {
 	 */
 
 	public void combineRight() {
-
+		
+		for(int i = 0; i < board.length; i++){
+			for(int j = 0; j < board[0].length-1; j++){
+				if(board[i][j] == board[i][j+1]){
+					board[i][j+1] *= 2;
+					board[i][j] = 0;
+					numOpenSpaces++;
+					tilesOccupied--;
+				}
+			}
+		}
+		
 	}
 
 	/*
@@ -256,7 +348,18 @@ public class Board {
 	 */
 
 	public void combineLeft() {
-
+		
+		for(int i = 0; i < board.length; i++){
+			for(int j = 0; j < board[0].length-1; j++){
+				if(board[i][j] == board[i][j+1]){
+					board[i][j] *= 2;
+					board[i][j+1] = 0;
+					numOpenSpaces++;
+					tilesOccupied--;
+				}
+			}
+		}
+		
 	}
 	
 	/*
@@ -265,7 +368,16 @@ public class Board {
 	 */
 
 	public void combineUp() {
-
+		for(int i = 0; i < board[0].length; i++){
+			for(int j = 0; j < board.length-1; j++){
+				if(board[j][i] == board[j+1][i]){
+					board[j][i] *= 2;
+					board[j+1][i] = 0;
+					numOpenSpaces++;
+					tilesOccupied--;
+				}
+			}
+		}
 	}
 
 	/*
@@ -274,7 +386,16 @@ public class Board {
 	 */
 
 	public void combineDown() {
-
+		for(int i = 0; i < board[0].length; i++){
+			for(int j = 0; j < board.length-1; j++){
+				if(board[j][i] == board[j+1][i]){
+					board[j+1][i] *= 2;
+					board[j][i] = 0;
+					numOpenSpaces++;
+					tilesOccupied--;
+				}
+			}
+		}
 	}
 
 	
@@ -288,18 +409,27 @@ public class Board {
 		//1) numbers slide to the left
 		//2) combine
 		//3) slide
+		this.slideLeft();
+		this.combineLeft();
+		this.populateOne();
 	}
 
 	public void right() {
-
+		this.slideRight();
+		this.combineRight();
+		this.populateOne();
 	}
 
 	public void up() {
-
+		this.slideUp();
+		this.combineUp();
+		this.populateOne();
 	}
 
 	public void down() {
-
+		this.slideDown();
+		this.combineDown();
+		this.populateOne();
 	}
 	
 	
@@ -321,4 +451,27 @@ public class Board {
 		}
 	}
 
+}
+
+class Coordinates{
+	int x;
+	int y;
+	
+	public Coordinates(){
+		this.x = 0;
+		this.y = 0;
+	}
+	
+	public Coordinates(int x, int y){
+		this.x = x;
+		this.y = y;
+	}
+	
+	public int getX(){
+		return this.x;
+	}
+	
+	public int getY(){
+		return this.y;
+	}
 }
