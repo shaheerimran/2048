@@ -41,7 +41,7 @@ public class Board {
 		 * An example is shown below. 
 		 * String str = String.format("%04d", 9);  // 0009  
 		 * int x = 30;
-		 * System.out.println(String.format("%04d",x));
+		 * //System.out.println(String.format("%04d",x));
 		 *     
 		 */
 		
@@ -330,10 +330,10 @@ public class Board {
 	public void combineRight() {
 		
 		for(int i = 0; i < board.length; i++){
-			for(int j = 0; j < board[0].length-1; j++){
-				if(board[i][j] == board[i][j+1]){
-					board[i][j+1] *= 2;
-					board[i][j] = 0;
+			for(int j = board[0].length-1; j > 0; j--){
+				if(board[i][j] == board[i][j-1]){
+					board[i][j] *= 2;
+					board[i][j-1] = 0;
 					numOpenSpaces++;
 					tilesOccupied--;
 				}
@@ -411,25 +411,25 @@ public class Board {
 		//3) slide
 		this.slideLeft();
 		this.combineLeft();
-		this.populateOne();
+		this.slideLeft();
 	}
 
 	public void right() {
 		this.slideRight();
 		this.combineRight();
-		this.populateOne();
+		this.slideRight();
 	}
 
 	public void up() {
 		this.slideUp();
 		this.combineUp();
-		this.populateOne();
+		this.slideUp();
 	}
 
 	public void down() {
 		this.slideDown();
 		this.combineDown();
-		this.populateOne();
+		this.slideDown();
 	}
 	
 	
@@ -475,3 +475,5 @@ class Coordinates{
 		return this.y;
 	}
 }
+		                   
+		        
